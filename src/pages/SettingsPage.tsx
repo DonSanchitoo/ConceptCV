@@ -11,8 +11,7 @@ import { Segmented, Toggle } from '../ui/kit'
 declare const __APP_VERSION__: string
 
 export const StorageCard = ({ compact }: { compact?: boolean }) => {
-  const { syncStatus, folderName, lastSavedAt, exportedRev } = useStore()
-  const rev = useStore((s) => s.db.rev)
+  const { syncStatus, folderName, lastSavedAt } = useStore()
   const file = useRef<HTMLInputElement>(null)
   const connected = !!folderName && syncStatus !== 'needs-permission'
   return (
@@ -24,7 +23,7 @@ export const StorageCard = ({ compact }: { compact?: boolean }) => {
             <b>Dossier synchronisé {connected && <span className="badge ok">actif</span>}</b>
             <p className="muted">
               {connected
-                ? `Tout est enregistré automatiquement dans « ${folderName} / ${DB_FILE} »${lastSavedAt ? `, dernière écriture à ${new Date(lastSavedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : ''}. Une copie de sécurité par jour est gardée dans le sous-dossier Sauvegardes.`
+                ? `Tout est enregistré automatiquement dans « ${folderName} » : la base complète (${DB_FILE}) et un fichier par projet dans le sous-dossier Projets${lastSavedAt ? `, dernière écriture à ${new Date(lastSavedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : ''}. Une copie de sécurité par jour est gardée dans le sous-dossier Sauvegardes.`
                 : 'Choisissez un dossier de votre iCloud Drive. Chaque modification y est écrite aussitôt, et iCloud la propage à vos autres appareils.'}
             </p>
             <div className="row">
@@ -43,7 +42,7 @@ export const StorageCard = ({ compact }: { compact?: boolean }) => {
           <div>
             <b>Fichier iCloud</b>
             <p className="muted">
-              Ce navigateur ne peut pas se brancher sur un dossier (c’est le cas sur iPhone et dans Safari). Ouvrez le fichier <code>{DB_FILE}</code> de votre dossier iCloud pour charger vos données, puis réenregistrez-le au même endroit après vos modifications.
+              Ce navigateur ne peut pas se brancher sur un dossier (c’est le cas sur iPhone et dans Safari). Importez un projet à la fois depuis le sous-dossier <code>Projets</code> de votre dossier iCloud, travaillez dessus, puis enregistrez-le au même endroit avec le bouton « Enregistrer le projet ». Votre ordinateur le récupère tout seul. Vous pouvez aussi ouvrir la base complète <code>{DB_FILE}</code>.
             </p>
           </div>
         </div>
@@ -51,10 +50,10 @@ export const StorageCard = ({ compact }: { compact?: boolean }) => {
       <div className="storage-mode">
         <div className="storage-icon"><HardDriveDownload /></div>
         <div>
-          {!compact && <b>Ouvrir ou enregistrer le fichier à la main {!connected && exportedRev !== rev && rev > 0 && <span className="badge warn">modifications non enregistrées</span>}</b>}
+          {!compact && <b>Ouvrir ou enregistrer un fichier à la main</b>}
           <div className="row">
-            <button className="btn" onClick={() => file.current?.click()}><FolderOpen /> Ouvrir {DB_FILE}</button>
-            <button className="btn" onClick={() => void exportDbFile()}><CloudUpload /> Enregistrer dans Fichiers</button>
+            <button className="btn" onClick={() => file.current?.click()}><FolderOpen /> Importer un projet ou la base</button>
+            <button className="btn" onClick={() => void exportDbFile()}><CloudUpload /> Enregistrer la base complète</button>
           </div>
           <input ref={file} type="file" accept=".json,application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void openDbFile(f) }} />
         </div>

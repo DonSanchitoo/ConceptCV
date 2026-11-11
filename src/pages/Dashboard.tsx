@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { DndContext, useDraggable, useDroppable, type DragEndEvent } from '@dnd-kit/core'
-import { BellRing, Briefcase, CalendarClock, FileText, Columns3, LayoutGrid, Mail, MapPin, Plus, Search, StickyNote } from 'lucide-react'
+import { BellRing, Briefcase, FolderInput, CalendarClock, FileText, Columns3, LayoutGrid, Mail, MapPin, Plus, Search, StickyNote } from 'lucide-react'
 import type { AppStatus, Application } from '../types'
 import { mutate, useStore } from '../store'
 import { newApplication } from '../lib/factory'
@@ -9,6 +9,7 @@ import { STATUSES, statusOf } from '../lib/status'
 import { go } from '../lib/router'
 import { Area, Empty, Field, Modal, cx } from '../ui/kit'
 import { useDndSensors } from '../ui/Sortable'
+import { openDbFile } from '../storage/sync'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
@@ -122,6 +123,8 @@ export const Dashboard = () => {
   const [filter, setFilter] = useState<AppStatus | 'all'>('all')
   const [view, setView] = useState<'grid' | 'board'>(() => (localStorage.getItem('ccv-view') as 'grid' | 'board') || 'grid')
   const [creating, setCreating] = useState(false)
+  const folder = useStore((s) => s.folderName)
+  const file = useRef<HTMLInputElement>(null)
   const sensors = useDndSensors()
   const list = useMemo(() => {
     const n = q.trim().toLowerCase()
@@ -150,12 +153,20 @@ export const Dashboard = () => {
           <h1>Candidatures</h1>
           <p className="muted">Un dossier par entreprise : CV, lettres, analyses et notes.</p>
         </div>
-        <button className="btn primary" onClick={() => setCreating(true)}>
-          <Plus /> Nouvelle candidature
-        </button>
+        <div className="row">
+          {!folder && (
+            <button className="btn" onClick={() => file.current?.click()} title="Ouvrir un projet du sous-dossier Projets, ou la base complète ConceptCV.json">
+              <FolderInput /> Importer
+            </button>
+          )}
+          <button className="btn primary" onClick={() => setCreating(true)}>
+            <Plus /> Nouvelle candidature
+          </button>
+          <input ref={file} type="file" accept=".json,application/json" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void openDbFile(f) }} />
+        </div>
       </header>
       {apps.length === 0 ? (
-        <Empty icon={<Briefcase />} title="Aucune candidature pour l’instant" text="Créez un premier dossier : vous y rangerez le CV, la lettre et vos notes pour cette entreprise." action={<button className="btn primary" onClick={() => setCreating(true)}><Plus /> Créer mon premier dossier</button>} />
+        <Empty icon={<Briefcase />} title="Aucune candidature pour l’instant" text="Créez un premier dossier : vous y rangerez le CV, la lettre et vos notes pour cette entreprise. Sur téléphone, « Importer » ouvre un projet rangé dans votre dossier iCloud." action={<button className="btn primary" onClick={() => setCreating(true)}><Plus /> Créer mon premier dossier</button>} />
       ) : (
         <>
           <div className="stats">

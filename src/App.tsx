@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { AlertTriangle, Briefcase, Check, CloudUpload, FolderSync, HardDrive, Loader2, Settings, UserRound } from 'lucide-react'
 import { useStore } from './store'
 import { go, useRoute } from './lib/router'
-import { exportDbFile, folderSupported, reconnectFolder } from './storage/sync'
+import { exportProjectFile, folderSupported, reconnectFolder } from './storage/sync'
 import { Dashboard } from './pages/Dashboard'
 import { ApplicationPage } from './pages/ApplicationPage'
 import { DocPage } from './pages/DocPage'
@@ -13,8 +13,10 @@ import { DialogHost } from './ui/dialog'
 import { Empty, cx } from './ui/kit'
 
 const SyncPill = () => {
-  const { syncStatus, folderName, exportedRev } = useStore()
+  const { syncStatus, folderName, exportedApps } = useStore()
   const rev = useStore((s) => s.db.rev)
+  const apps = useStore((s) => s.db.applications)
+  const pending = apps.filter((a) => exportedApps[a.id] !== a.updatedAt)
   if (syncStatus === 'needs-permission')
     return (
       <button className="sync warn" onClick={() => void reconnectFolder()} title="Le navigateur redemande l’accès au dossier">
@@ -34,15 +36,15 @@ const SyncPill = () => {
         <FolderSync /> <span>Connecter un dossier iCloud</span>
       </button>
     )
-  if (rev > 0 && exportedRev !== rev)
+  if (pending.length)
     return (
-      <button className="sync warn" onClick={() => void exportDbFile()} title="Enregistrer le fichier dans iCloud">
-        <CloudUpload /> <span>Enregistrer dans iCloud</span>
+      <button className="sync warn" onClick={() => (pending.length === 1 ? void exportProjectFile(pending[0]) : go('/reglages'))} title="Des projets modifiés ne sont pas encore enregistrés dans un fichier">
+        <CloudUpload /> <span>{pending.length === 1 ? `Enregistrer « ${pending[0].company} »` : `${pending.length} projets à enregistrer`}</span>
       </button>
     )
   return (
     <button className="sync" onClick={() => go('/reglages')}>
-      {rev > 0 ? <Check /> : <HardDrive />} <span>{rev > 0 ? 'Fichier iCloud à jour' : 'Stocké sur cet appareil'}</span>
+      {rev > 0 ? <Check /> : <HardDrive />} <span>{rev > 0 ? 'Projets enregistrés' : 'Stocké sur cet appareil'}</span>
     </button>
   )
 }

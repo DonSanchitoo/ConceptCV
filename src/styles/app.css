@@ -260,6 +260,7 @@ input[type='range'] { width: 100%; accent-color: var(--primary); height: 26px; }
   .preview-bar { bottom: calc(64px + env(safe-area-inset-bottom)); } .preview-scroll { padding: 14px 8px 120px; }
   .onb-card { padding: 24px; border-radius: 20px; } .onb-card h1 { font-size: 24px; } .note-area { margin: 12px auto; padding: 18px; }
   .menu { min-width: 210px; }
+  .app-head { gap: 10px; } .app-head > .menu-wrap { margin-left: auto; } .app-head-fields { flex-basis: calc(100% - 130px); } .h-input { font-size: 21px; }
   .input, .search input, .note-area, .para-role { font-size: 16px; }
 }
 @media print { .toasts, .overlay { display: none !important; } }

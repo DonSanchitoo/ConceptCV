@@ -13,12 +13,20 @@ Atelier privé de CV et de lettres de motivation. Une application web sans serve
 
 ## Données et synchronisation
 
-Tout est stocké dans un seul fichier, `ConceptCV.json`.
+Le dossier choisi contient :
+
+```
+ConceptCV.json            base complète (profil, réglages, tous les projets)
+Projets/<Entreprise>_<id>.json   un fichier par projet (dossier de candidature)
+Sauvegardes/              une copie de la base par jour
+```
 
 | Appareil | Fonctionnement |
 | --- | --- |
-| Ordinateur, Chrome ou Edge | On choisit un dossier (iCloud Drive). Chaque modification y est écrite aussitôt, avec une copie de sécurité par jour dans `Sauvegardes/`. Si le fichier change depuis un autre appareil, l'application le recharge. |
-| iPhone, Safari, Firefox | Ces navigateurs n'autorisent pas l'accès à un dossier. On ouvre `ConceptCV.json` depuis Fichiers, puis on le réenregistre au même endroit après modification (bouton « Enregistrer dans iCloud »). |
+| Ordinateur, Chrome ou Edge | On choisit le dossier (iCloud Drive) une fois. Chaque modification y est écrite aussitôt. Les fichiers modifiés depuis un autre appareil sont relus et fusionnés automatiquement : la version la plus récente de chaque projet l'emporte. |
+| iPhone, Safari, Firefox | Ces navigateurs n'autorisent pas l'accès à un dossier. On importe **un projet à la fois** depuis `Projets/` (bouton « Importer »), on travaille dessus, puis « Enregistrer le projet » le redépose dans Fichiers au même endroit. L'ordinateur le récupère à la prochaine ouverture. On peut aussi ouvrir la base complète `ConceptCV.json`. |
+
+Un fichier de projet embarque une copie du profil, pour pouvoir créer un CV sur un téléphone vierge.
 
 Rien n'est envoyé en ligne, à une exception près : le correcteur orthographique transmet le texte vérifié à `api.languagetool.org`, uniquement au clic et après accord.
 
@@ -49,6 +57,7 @@ Le workflow `deploy.yml` se déclenche sur tout tag `*.*.*` : typage, tests, con
 - L'import PDF repose sur des règles (colonnes, titres, dates) : le résultat est à relire.
 - L'export Word ne reproduit pas la mise en page des modèles à colonnes, par choix : il produit une version une colonne lisible par les ATS.
 - Le score ATS est une estimation fondée sur les pratiques documentées, pas le verdict d'un logiciel de recrutement précis.
-- La synchronisation est de type « dernière écriture gagnante » : éviter de modifier sur deux appareils en même temps.
+- La synchronisation est de type « dernière écriture gagnante », projet par projet : éviter de modifier le même projet sur deux appareils en même temps.
+- Sur iPhone, l'enregistrement passe par la feuille de partage (« Enregistrer dans Fichiers ») : il faut choisir le sous-dossier `Projets` et accepter de remplacer le fichier.
 
 Voir aussi [docs/ETAT_DE_L_ART.md](docs/ETAT_DE_L_ART.md).

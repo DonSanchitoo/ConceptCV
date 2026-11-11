@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, BarChart3, Copy, ExternalLink, FileText, Mail, MoreHorizontal, Plus, StickyNote, Trash2 } from 'lucide-react'
+import { ArrowLeft, BarChart3, CloudUpload, Copy, ExternalLink, FileText, Mail, MoreHorizontal, Plus, StickyNote, Trash2 } from 'lucide-react'
 import type { Application, CvDoc, Doc, Lang, LetterDoc } from '../types'
 import { mutate, toast, updateApp, useStore } from '../store'
 import { newAnalysis, newCv, newLetter, newNote } from '../lib/factory'
@@ -16,6 +16,7 @@ import { confirmDialog, promptDialog } from '../ui/dialog'
 import { TemplateGallery } from '../editor/TemplateGallery'
 import { LetterModelPicker } from '../editor/LetterModelPicker'
 import { setStatus } from './Dashboard'
+import { exportProjectFile } from '../storage/sync'
 
 const KIND = {
   cv: { label: 'CV', plural: 'CV', icon: <FileText /> },
@@ -93,6 +94,9 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
   const [modal, setModal] = useState<'cv' | 'letter' | 'dup' | null>(null)
   const [lang, setLang] = useState<Lang>(db.settings.defaultLang)
   const [event, setEvent] = useState('')
+  const folder = useStore((s) => s.folderName)
+  const savedAt = useStore((s) => s.exportedApps[app.id])
+  const unsaved = !folder && savedAt !== app.updatedAt
   const set = <K extends keyof Application>(k: K) => (v: Application[K]) => updateApp(app.id, (a) => void (a[k] = v))
   const keywords = useMemo(() => (app.jobText.length > 80 ? extractKeywords(app.jobText, 18) : []), [app.jobText])
   const allCvs = db.applications.flatMap((a) => a.docs.filter((d): d is CvDoc => d.kind === 'cv').map((d) => ({ a, d })))
@@ -110,7 +114,10 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
   const remove = async () => {
     if (!(await confirmDialog({ title: `Supprimer le dossier « ${app.company} » ?`, message: `${app.docs.length} document(s) seront supprimés.`, ok: 'Supprimer', danger: true }))) return
     go('/')
-    mutate((d) => void (d.applications = d.applications.filter((a) => a.id !== app.id)))
+    mutate((d) => {
+      d.applications = d.applications.filter((a) => a.id !== app.id)
+      d.deleted = { ...d.deleted, [app.id]: nowIso() }
+    })
   }
   const duplicate = () => {
     const copy: Application = { ...clone(app), id: uid(), company: `${app.company} (copie)`, status: 'draft', timeline: [], appliedAt: '', createdAt: nowIso(), updatedAt: nowIso(), docs: app.docs.map((d) => ({ ...clone(d), id: uid() })) }
@@ -136,9 +143,15 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
             <option key={s.id} value={s.id}>{s.label}</option>
           ))}
         </select>
+        {!folder && (
+          <button className={cx('btn', unsaved && 'primary')} onClick={() => void exportProjectFile(app)} title="Enregistre ce projet dans un fichier, à ranger dans le sous-dossier Projets de votre dossier iCloud">
+            <CloudUpload /> {unsaved ? 'Enregistrer le projet' : 'Projet enregistré'}
+          </button>
+        )}
         <Menu trigger={<button className="icon-btn" aria-label="Actions"><MoreHorizontal /></button>}>
           {(close) => (
             <>
+              <button className="menu-item" onClick={() => { close(); void exportProjectFile(app) }}><CloudUpload /> <b>Exporter le fichier du projet</b></button>
               <button className="menu-item" onClick={() => { close(); duplicate() }}><Copy /> <b>Dupliquer le dossier</b></button>
               <button className="menu-item danger" onClick={() => { close(); void remove() }}><Trash2 /> <b>Supprimer le dossier</b></button>
             </>

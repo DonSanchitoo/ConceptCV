@@ -230,4 +230,16 @@ export interface DB {
   profile: Profile
   applications: Application[]
   settings: Settings
+  /** Dossiers supprimés (id → date) : évite qu'un ancien fichier de projet les fasse réapparaître. */
+  deleted?: Record<string, string>
+}
+
+/** Fichier d'un seul dossier de candidature, pour travailler sur un projet à la fois (téléphone). */
+export interface ProjectFile {
+  app: 'ConceptCV'
+  type: 'project'
+  schema: 1
+  exportedAt: string
+  application: Application
+  profile: Profile
 }

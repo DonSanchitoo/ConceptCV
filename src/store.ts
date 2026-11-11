@@ -22,6 +22,7 @@ interface State {
   folderName: string
   lastSavedAt: string
   exportedRev: number
+  exportedApps: Record<string, string> // dossier → date de la version enregistrée dans un fichier
   toasts: Toast[]
   mutate: (fn: (db: DB) => void) => void
   replaceDb: (db: DB, keepHistory?: boolean) => void
@@ -43,6 +44,7 @@ export const useStore = create<State>((set, get) => ({
   folderName: '',
   lastSavedAt: '',
   exportedRev: Number(localStorage.getItem('ccv-exported-rev') || 0),
+  exportedApps: JSON.parse(localStorage.getItem('ccv-exported-apps') || '{}') as Record<string, string>,
   toasts: [],
   mutate: (fn) => {
     const { db, past, lastMutation } = get()
