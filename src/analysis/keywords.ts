@@ -117,7 +117,7 @@ export const cvPlainText = (cv: CvDoc): string => {
       for (const i of items) out.push([i.title, i.tags.join(', ') || i.subtitle].filter(Boolean).join(' : '))
     else
       for (const i of items) {
-        out.push([i.title, dateRange(i)].filter(Boolean).join(' — '))
+        out.push([i.title, dateRange(i)].filter(Boolean).join(', '))
         if (i.subtitle || i.location) out.push([i.subtitle, i.location].filter(Boolean).join(', '))
         if (i.description) out.push(i.description)
         for (const b of i.bullets) out.push(`- ${b}`)

@@ -202,7 +202,7 @@ const Compact = ({ s, d, narrow, patch }: { s: Section; d: Design; narrow: boole
           {title(i)}
           {(i.tags.length > 0 || i.subtitle) && (
             <>
-              {mode === 'inline' && <span className="ci-sep">{i.tags.length ? ' : ' : ' — '}</span>}
+              {mode === 'inline' && <span className="ci-sep">{' : '}</span>}
               {detail(i)}
             </>
           )}

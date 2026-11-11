@@ -42,9 +42,9 @@ const CONTACT = /^(contact|coordonnees|informations personnelles|infos|personal 
 const MONTH = "(?:janv?\\.?|janvier|f[ée]vr?\\.?|f[ée]vrier|mars|avr\\.?|avril|mai|juin|juil\\.?|juillet|ao[uû]t|sept?\\.?|septembre|oct\\.?|octobre|nov\\.?|novembre|d[ée]c\\.?|d[ée]cembre|jan\\.?|january|feb\\.?|february|march|apr\\.?|april|may|june|july|aug\\.?|august|october|december)"
 const DATE = `(?:${MONTH}\\s+)?(?:\\d{1,2}[/.])?(?:19|20)\\d{2}`
 const END = `(?:${DATE}|${MONTH}\\s+(?:19|20)\\d{2}|aujourd['’]hui|pr[ée]sent|present|en cours|now|current|actuel)`
-const RANGE = new RegExp(`(?:depuis\\s+)?(${DATE}|${MONTH})\\s*(?:[–—-]|à|au|to|\\s)\\s*(${END})\\s*$|(?:depuis\\s+|since\\s+)?(${DATE})\\s*$`, 'i')
+const RANGE = new RegExp(`(?:depuis\\s+)?(${DATE}|${MONTH})\\s*(?:[–\u2014-]|à|au|to|\\s)\\s*(${END})\\s*$|(?:depuis\\s+|since\\s+)?(${DATE})\\s*$`, 'i')
 const LEVEL = /\b(A1|A2|B1|B2|C1|C2|natif|native|bilingue|bilingual|courant|fluent|interm[ée]diaire|intermediate|d[ée]butant|beginner|notions|scolaire|professionnel|professional|langue maternelle|mother tongue|TOEIC ?\d*|TOEFL ?\d*)\b.*$/i
-const BULLET = /^[•\-–—▪■●◦▸►*·]\s+/
+const BULLET = /^[•\-–\u2014▪■●◦▸►*·]\s+/
 
 const median = (a: number[]): number => {
   if (!a.length) return 0
@@ -171,7 +171,7 @@ const parseEntries = (lines: Line[], lead: number): Item[] => {
   const out: Item[] = []
   if (loose.length) out.push(newItem({ bullets: toBullets(loose, lead) }))
   for (const { head, rest } of items) {
-    let title = head.segs.length > 1 ? head.segs.slice(0, -1).map((s) => s.text).join(' ') : head.text.replace(RANGE, '').replace(/[\s,|–—-]+$/, '')
+    let title = head.segs.length > 1 ? head.segs.slice(0, -1).map((s) => s.text).join(' ') : head.text.replace(RANGE, '').replace(/[\s,|–\u2014-]+$/, '')
     const dates = splitDates(head.segs[head.segs.length - 1].text)
     let subtitle = ''
     let location = ''
@@ -183,7 +183,7 @@ const parseEntries = (lines: Line[], lead: number): Item[] => {
     }
     const sub = body[0]
     if (sub && !BULLET.test(sub.text) && sub.text.length < 90 && !/[.!?]$/.test(sub.text)) {
-      const parts = sub.text.split(/\s+[·•|]\s+|\s+[–—]\s+|\s{2,}/)
+      const parts = sub.text.split(/\s+[·•|]\s+|\s+[–\u2014]\s+|\s{2,}/)
       subtitle = parts[0]
       location = parts.slice(1).join(', ')
       body = body.slice(1)
@@ -197,7 +197,7 @@ const parseCompact = (lines: Line[], type: SectionType): Item[] => {
   if (type === 'languages')
     return lines.map((l) => {
       const m = LEVEL.exec(l.text)
-      const title = (m ? l.text.slice(0, m.index) : l.text).replace(/[\s:–—-]+$/, '')
+      const title = (m ? l.text.slice(0, m.index) : l.text).replace(/[\s:–\u2014-]+$/, '')
       return newItem({ title, subtitle: m ? m[0].trim() : '' })
     })
   const clean = lines.map((l) => l.text.replace(BULLET, ''))

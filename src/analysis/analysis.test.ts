@@ -5,7 +5,7 @@ import { analyzeLetter } from './coach'
 import { newCv, newLetter, newApplication } from '../lib/factory'
 import { sampleProfile } from '../templates/sample'
 import { CV_TEMPLATES } from '../templates/cvTemplates'
-import { LETTER_MODELS } from '../templates/letterModels'
+import { CLOSINGS, GREETINGS, LETTER_MODELS, ROLE_GUIDES } from '../templates/letterModels'
 
 const JOB = `Nous recherchons un chef de projet digital pour piloter la refonte de notre site e-commerce Shopify.
 Vous animez une équipe en méthode Scrum, suivez le budget et analysez la conversion avec Google Analytics.
@@ -91,6 +91,17 @@ describe('banques de modèles', () => {
   it('propose 30 modèles de CV aux identifiants uniques', () => {
     expect(CV_TEMPLATES).toHaveLength(30)
     expect(new Set(CV_TEMPLATES.map((t) => t.id)).size).toBe(30)
+  })
+  it('ne contient aucun tiret cadratin', () => {
+    const texts = [
+      ...LETTER_MODELS.flatMap((m) => [m.name, m.when, m.subject, ...m.paragraphs.map((p) => p.text)]),
+      ...Object.values(GREETINGS).flat(),
+      ...Object.values(CLOSINGS).flat(),
+      ...Object.values(ROLE_GUIDES).flatMap((g) => Object.values(g).flatMap((r) => [r.label, r.goal, ...r.tips, ...r.starters])),
+      ...CV_TEMPLATES.flatMap((t) => [t.name, t.tagline]),
+      cvPlainText(newCv(sampleProfile(), 'atlas', 'fr', 'CV')),
+    ]
+    expect(texts.filter((t) => t.includes('\u2014'))).toEqual([])
   })
   it('propose 30 modèles de lettres, chacun en quatre temps', () => {
     expect(LETTER_MODELS).toHaveLength(30)
