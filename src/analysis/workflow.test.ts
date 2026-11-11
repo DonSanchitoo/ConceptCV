@@ -110,7 +110,7 @@ describe('kit d’envoi', () => {
     expect(m[0].body).toContain('Bonjour Mme Roux,')
     expect(m[0].body).toContain('lettre de motivation')
     expect(m[1].body).toContain('2 nov. 2026')
-    expect(m.map((x) => x.subject + x.body).join('').includes('—')).toBe(false)
+    expect(m.map((x) => x.subject + x.body).join('').includes(String.fromCharCode(0x2014))).toBe(false)
   })
   it('produit un rappel de calendrier valide', () => {
     const ics = followUpIcs(app)
