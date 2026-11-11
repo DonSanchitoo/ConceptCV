@@ -22,12 +22,12 @@ describe('lecture des sources', () => {
   it('lit un flux RSS', () => {
     const o = parseFeed(RSS, 'Test')
     expect(o).toHaveLength(3)
-    expect(o[0]).toMatchObject({ title: 'Cheffe de projet digital (H/F) - Lyon (69)', url: 'https://exemple.fr/offre/1', company: 'Maison Lumière', source: 'Test' })
+    expect(o[0]).toMatchObject({ title: 'Cheffe de projet digital (H/F) - Lyon (69)', url: 'https://exemple.fr/offre/1', company: '', source: 'Test' })
     expect(o[0].text).toBe("Refonte d'un site Shopify en méthode Scrum.")
     expect(o[0].date).toMatch(/^\d{4}-\d{2}-\d{2}T/)
   })
   it('lit un flux Atom', () => {
-    expect(parseFeed(ATOM, 'Test')[0]).toMatchObject({ title: 'Chargé de mission SIG', url: 'https://exemple.org/a/9', company: 'Département' })
+    expect(parseFeed(ATOM, 'Test')[0]).toMatchObject({ title: 'Chargé de mission SIG', url: 'https://exemple.org/a/9' })
   })
   it('repère les liens d’offres dans une page quelconque', () => {
     const html = `<html><body><nav><a href="/">Accueil du site emploi</a></nav><ul>

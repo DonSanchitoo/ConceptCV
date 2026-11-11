@@ -30,6 +30,8 @@ Un navigateur ne peut pas lire les pages d'un autre site. La recherche passe don
 2. Variables d'environnement facultatives : `FT_CLIENT_ID` et `FT_CLIENT_SECRET` (identifiants gratuits obtenus sur francetravail.io en s'abonnant à l'API « Offres d'emploi v2 »), `ALLOWED_ORIGINS` si le site n'est pas servi depuis `https://donsanchitoo.github.io`.
 3. Coller l'adresse du relais dans la page Offres.
 
+Le relais de ce dépôt est déjà déployé (`https://conceptcv-relay-sanchez-s-org.vercel.app`) et renseigné par défaut. Les étapes ci-dessus ne servent que pour en déployer un autre.
+
 Le relais n'accepte que les appels venant du site, refuse les adresses internes, et ne reçoit que les critères de recherche et les adresses à lire : jamais les CV ni les dossiers.
 
 ## Données et synchronisation

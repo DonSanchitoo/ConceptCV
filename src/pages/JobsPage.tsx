@@ -3,7 +3,7 @@ import { BookmarkPlus, CheckCircle2, CircleAlert, ExternalLink, EyeOff, FolderPl
 import type { JobQuery, JobsConfig } from '../types'
 import { mutate, toast, useStore } from '../store'
 import { shortDate, uid } from '../lib/util'
-import { bookmarklet, defaultJobs, emptyQuery, fetchOffer, fillUrl, newSource, pingRelay, runSearch, type SearchResult } from '../jobs/search'
+import { DEFAULT_RELAY, bookmarklet, defaultJobs, emptyQuery, fetchOffer, fillUrl, newSource, pingRelay, runSearch, type SearchResult } from '../jobs/search'
 import { resolvePlace } from '../jobs/geo'
 import { NO_PLACE, offerId, type Place } from '../jobs/score'
 import { splitTitle } from '../jobs/parse'
@@ -36,7 +36,7 @@ export const JobsPage = ({ capture }: { capture?: boolean }) => {
   const stored = useStore((s) => s.db.jobs)
   const profile = useStore((s) => s.db.profile)
   const apps = useStore((s) => s.db.applications)
-  const jobs = useMemo<JobsConfig>(() => stored ?? defaultJobs(), [stored])
+  const jobs = useMemo<JobsConfig>(() => (stored ? { ...stored, relayUrl: stored.relayUrl || DEFAULT_RELAY } : defaultJobs()), [stored])
   const set = (fn: (j: JobsConfig) => void) => mutate((db) => { if (!db.jobs) db.jobs = defaultJobs(); fn(db.jobs) })
   const cached = useMemo(loadCache, [])
   const [q, setQ] = useState<JobQuery>(cached?.query ?? emptyQuery())

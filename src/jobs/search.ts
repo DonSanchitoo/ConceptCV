@@ -4,10 +4,11 @@ import { extractJob, parseFeed, parseFranceTravail, parseListPage, type RawOffer
 import { scoreOffers, type Place, type ScoredOffer } from './score'
 
 /** Relais déployé pour ce dépôt. Modifiable dans la page Offres. */
-export const DEFAULT_RELAY = ''
+export const DEFAULT_RELAY = 'https://conceptcv-relay-sanchez-s-org.vercel.app'
 
 export const DEFAULT_SOURCES: JobSource[] = [
   { id: 'francetravail', name: 'France Travail', kind: 'francetravail', url: '', enabled: true },
+  { id: 'georezo', name: 'GeoRezo (emploi géomatique)', kind: 'rss', url: 'https://georezo.net/extern.php?action=feed&fid=10&type=rss&show=50', enabled: true },
   { id: 'service-public', name: 'Choisir le service public', kind: 'page', url: 'https://choisirleservicepublic.gouv.fr/nos-offres/filtres/mot-cles/{q}/', enabled: true },
 ]
 
@@ -18,6 +19,7 @@ export const DEFAULT_LINKS: JobLink[] = [
   { id: 'apec', name: 'APEC', url: 'https://www.apec.fr/candidat/recherche-emploi.html/emploi?motsCles={q}&sortsType=DATE' },
   { id: 'ft', name: 'France Travail (site)', url: 'https://candidat.francetravail.fr/offres/recherche?motsCles={q}&tri=1' },
   { id: 'territorial', name: 'Emploi territorial', url: 'https://www.emploi-territorial.fr/emploi-mobilite/?search-fam-metier=&adv-search={q}' },
+  { id: 'georezo', name: 'GeoRezo (forum emploi)', url: 'https://georezo.net/forum/viewforum.php?id=10' },
   { id: 'google', name: 'Google Emploi', url: 'https://www.google.com/search?q={q}+{lieu}+emploi&ibp=htl;jobs' },
 ]
 

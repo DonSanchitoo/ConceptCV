@@ -54,10 +54,10 @@ export const parseFeed = (xml: string, source: string): RawOffer[] => {
     .map((b) => {
       const href = /<link[^>]*\shref=["']([^"']+)["'][^>]*>/i.exec(b)?.[1]
       const url = unescape(href || tag(b, ['link']) || tag(b, ['guid', 'id']))
-      const author = tag(b, ['author'])
       return {
         title: htmlToText(tag(b, ['title'])),
-        company: clean(htmlToText(tag(b, ['creator']) || (/<name>/.test(author) ? tag(author, ['name']) : ''))),
+        // L'auteur d'un flux est celui qui a publié l'annonce, rarement l'employeur : on ne le devine pas.
+        company: '',
         location: '',
         date: toIso(tag(b, ['pubDate', 'published', 'updated', 'date'])),
         url: url.trim(),
