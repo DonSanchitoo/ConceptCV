@@ -92,7 +92,7 @@ export const cvToDocx = async (cv: CvDoc): Promise<Blob> => {
 }
 
 export const letterToDocx = async (l: LetterDoc): Promise<Blob> => {
-  const { AlignmentType, Document, Packer, Paragraph, TextRun, convertMillimetersToTwip } = await import('docx')
+  const { AlignmentType, Document, ImageRun, Packer, Paragraph, TextRun, convertMillimetersToTwip } = await import('docx')
   const d = l.design
   const body = fontDocx(d.fontBody)
   const size = Math.round(d.fontSize * 2 + 2)
@@ -112,7 +112,21 @@ export const letterToDocx = async (l: LetterDoc): Promise<Blob> => {
     ...(l.reference ? [p(`${l.lang === 'fr' ? 'Réf.' : 'Ref.'} : ${l.reference}`)] : []),
     p(l.greeting, { spacing: { before: 320, after: 200 } }),
     ...l.paragraphs.filter((x) => x.text.trim()).map((x) => p(x.text, { alignment: AlignmentType.JUSTIFIED, spacing: { after: 180 } })),
-    p(l.closing, { spacing: { before: 80, after: 480 } }),
+    p(l.closing, { spacing: { before: 80, after: l.sig ? 160 : 480 } }),
+    ...(l.sig && l.sig.src.startsWith('data:image/png')
+      ? [
+          new Paragraph({
+            alignment: AlignmentType.RIGHT,
+            children: [
+              new ImageRun({
+                type: 'png',
+                data: Uint8Array.from(atob(l.sig.src.split(',')[1]), (c) => c.charCodeAt(0)),
+                transformation: { width: Math.round(l.sig.w * 3.78), height: Math.round(l.sig.w * l.sig.ratio * 3.78) },
+              }),
+            ],
+          }),
+        ]
+      : []),
     p(l.signature, { alignment: AlignmentType.RIGHT }, { bold: true }),
   ]
   const margin = convertMillimetersToTwip(22)

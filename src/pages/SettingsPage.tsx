@@ -96,6 +96,7 @@ export const SettingsPage = () => {
       <div className="card">
         <h3>Préférences</h3>
         <Segmented label="Apparence" value={settings.theme} onChange={(v) => mutate((d) => void (d.settings.theme = v))} options={[{ value: 'auto', label: 'Système' }, { value: 'light', label: 'Clair' }, { value: 'dark', label: 'Sombre' }]} />
+        <Toggle label="Assistant « Adapter à l’offre » dans l’éditeur de CV" checked={settings.assistant !== false} onChange={(v) => mutate((d) => void (d.settings.assistant = v))} />
         <Segmented label="Langue par défaut des documents" value={settings.defaultLang} onChange={(v) => mutate((d) => void (d.settings.defaultLang = v))} options={[{ value: 'fr', label: 'Français' }, { value: 'en', label: 'Anglais' }]} />
       </div>
       <div className="card">

@@ -9,6 +9,11 @@ Atelier privé de CV et de lettres de motivation. Une application web sans serve
 - **Concepteur de CV** : 30 modèles, parcours guidé rubrique par rubrique avec conseils, édition directe dans l'aperçu, pagination A4 réelle, réglage des couleurs, polices, marges, colonnes, en-tête, style des titres, affichage des compétences. Les rubriques se réordonnent et changent de colonne par glisser-déposer.
 - **Analyse ATS** : score, contrôle de la structure (colonnes, intitulés, dates, jauges), des coordonnées, de la rédaction (puces sans résultat, chiffres), et couverture des termes clés de l'offre. Aperçu du texte tel qu'un ATS le lit.
 - **Lettres de motivation** : 30 modèles par situation (20 en français, 10 en anglais), design assorti aux CV, guide par paragraphe (objectif, conseils, amorces, longueur), coach de rédaction, correcteur orthographique LanguageTool à la demande.
+- **Assistant « Adapter à l'offre »** : compare l'annonce, le CV et le profil, puis propose d'afficher un élément masqué, d'ajouter une réalisation ou une compétence présente dans le profil, de remonter la puce la plus proche de l'offre, de reprendre l'intitulé du poste. Chaque proposition se valide ou s'ignore, rien n'est appliqué d'office, et l'assistant se désactive dans les réglages. Il ne propose jamais un terme absent du profil.
+- **Envoi** : contrôle croisé du CV et de la lettre (nom d'une autre entreprise resté dans le texte, date, crochets, identité et chiffres cohérents), mail d'accompagnement prêt à ouvrir dans la messagerie, puis « J'ai envoyé » qui fige une copie des documents. Chaque nouvel envoi crée une version (1, 2, 3) consultable en lecture seule.
+- **Relance** : date de rappel exportable vers le calendrier (`.ics`), mail de relance pré-rempli, décompte des relances faites.
+- **Entretien** : fiche par dossier avec questions probables tirées de l'annonce, exemples tirés du CV envoyé, questions à poser et notes, le tout modifiable.
+- **Signature manuscrite** : image importée (PNG transparent conseillé), placée et redimensionnée directement sur la lettre à la souris ou au doigt, reprise dans le PDF et le Word.
 - **Exports** : PDF (identique à l'aperçu, texte sélectionnable), Word `.docx` (une colonne, modifiable, pensé pour les ATS), texte brut.
 
 ## Données et synchronisation

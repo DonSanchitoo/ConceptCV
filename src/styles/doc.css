@@ -126,6 +126,14 @@
 .lt-signature { margin-top: 9mm !important; font-weight: 700; text-align: right; padding-right: 8mm; }
 .letter.layout-single .cv-main > .blk-last { padding-bottom: 5mm; }
 
+.lt-sigwrap { display: flex; justify-content: flex-end; padding-right: 8mm; margin-top: 4mm; height: 0; position: relative; z-index: 2; }
+.lt-sig { position: relative; flex: none; align-self: flex-start; touch-action: none; user-select: none; }
+.lt-sig img { width: 100%; display: block; pointer-events: none; }
+.lt-sig.edit { cursor: move; outline: 1px dashed transparent; outline-offset: 2px; }
+.lt-sig.edit:hover, .lt-sig.edit:active { outline-color: #6366f1; }
+.sig-handle { position: absolute; right: -7px; bottom: -7px; width: 16px; height: 16px; border-radius: 50%; background: #6366f1; border: 2px solid #fff; cursor: nwse-resize; box-shadow: 0 1px 4px rgba(15, 23, 42, .3); }
+.lt-signature.has-sig { margin-top: 22mm !important; }
+
 /* Vignettes */
 .cv-page.clip { height: var(--page-h); }
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { LetterDoc, Recipient } from '../types'
 import { cityLine } from '../lib/util'
+import { SignatureBox } from './SignatureBox'
 import { ContactList, Ctx, E, Identity, T, designVars, pageHeightMm } from './shared'
 
 export type LetterPatch = (fn: (l: LetterDoc) => void) => void
@@ -105,7 +106,8 @@ export const LetterDocument = ({ letter, edit = false, patch, onPages, onSelectP
                 </div>
               ))}
               <E tag="p" className="lt-closing" multiline value={l.closing} onCommit={set('closing')} placeholder="Formule de politesse" />
-              <E tag="p" className="lt-signature" value={l.signature} onCommit={set('signature')} placeholder="Prénom Nom" />
+              {l.sig && <SignatureBox sig={l.sig} edit={edit} onChange={p ? (g) => p((x) => void (x.sig && Object.assign(x.sig, g))) : undefined} />}
+              <E tag="p" className={`lt-signature ${l.sig ? 'has-sig' : ''}`} value={l.signature} onCommit={set('signature')} placeholder="Prénom Nom" />
             </div>
           </div>
         </div>

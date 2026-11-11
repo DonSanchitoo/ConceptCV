@@ -173,3 +173,24 @@ export const fileToPhoto = (file: File, max = 480): Promise<string> =>
     }
     img.src = url
   })
+
+/** Charge une signature (PNG de préférence, pour garder le fond transparent) et la réduit si besoin. */
+export const fileToSignature = (file: File, max = 800): Promise<{ src: string; ratio: number }> =>
+  new Promise((resolve, reject) => {
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      const scale = Math.min(1, max / img.width)
+      const c = document.createElement('canvas')
+      c.width = Math.round(img.width * scale)
+      c.height = Math.round(img.height * scale)
+      c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height)
+      URL.revokeObjectURL(url)
+      resolve({ src: c.toDataURL('image/png'), ratio: c.height / c.width })
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Image illisible'))
+    }
+    img.src = url
+  })

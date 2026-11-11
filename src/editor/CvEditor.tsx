@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { FileText, LayoutList, Palette, ShieldCheck, UserRound } from 'lucide-react'
+import { FileText, LayoutList, Palette, ShieldCheck, Target, UserRound } from 'lucide-react'
 import type { Application, CvDoc } from '../types'
 import { mutate, toast, updateApp, updateDoc, useStore } from '../store'
 import { CvDocument } from '../render/CvDocument'
@@ -17,6 +17,7 @@ import { Preview } from './Preview'
 import { ContentPanel, DesignPanel, StructurePanel } from './CvPanels'
 import { AtsPanel } from './AtsPanel'
 import { TemplateGallery } from './TemplateGallery'
+import { TailorPanel } from './TailorPanel'
 
 export const cvFileName = (cv: CvDoc, app: Application) => slug(['CV', fullName(cv.basics), app.company].filter(Boolean).join(' ')) || 'CV'
 
@@ -25,6 +26,7 @@ export const CvEditor = ({ app, cv }: { app: Application; cv: CvDoc }) => {
   const [step, setStep] = useState('basics')
   const [pages, setPages] = useState(1)
   const [gallery, setGallery] = useState(false)
+  const assistant = useStore((s) => s.db.settings.assistant !== false)
   const patch = useCallback((fn: (c: CvDoc) => void) => updateDoc<CvDoc>(app.id, cv.id, fn), [app.id, cv.id])
   const score = analyzeCv(cv, app.jobText, pages).score
   const file = cvFileName(cv, app)
@@ -91,6 +93,8 @@ export const CvEditor = ({ app, cv }: { app: Application; cv: CvDoc }) => {
       </>
     ) : tab === 'design' ? (
       <DesignPanel cv={cv} patch={patch} onGallery={() => setGallery(true)} />
+    ) : tab === 'tailor' && assistant ? (
+      <TailorPanel cv={cv} app={app} patch={patch} onJobText={(v) => updateApp(app.id, (a) => void (a.jobText = v))} />
     ) : tab === 'structure' ? (
       <StructurePanel cv={cv} patch={patch} onOpen={openSection} />
     ) : (
@@ -125,6 +129,7 @@ export const CvEditor = ({ app, cv }: { app: Application; cv: CvDoc }) => {
           { id: 'content', label: 'Contenu', icon: <FileText /> },
           { id: 'design', label: 'Design', icon: <Palette /> },
           { id: 'structure', label: 'Structure', icon: <LayoutList /> },
+          ...(assistant ? [{ id: 'tailor', label: 'Adapter', icon: <Target /> }] : []),
           { id: 'ats', label: 'Analyse', icon: <ShieldCheck /> },
         ]}
         tab={tab}

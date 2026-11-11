@@ -113,6 +113,8 @@ export interface CvDoc {
   design: Design
   basics: Basics
   sections: Section[]
+  /** Propositions de l'assistant que l'utilisateur a écartées. */
+  ignored?: string[]
   main: string[] // ids de sections, colonne principale
   side: string[] // ids de sections, colonne latérale
   createdAt: string
@@ -136,6 +138,15 @@ export interface Recipient {
   city: string
 }
 
+/** Signature manuscrite : image, largeur et décalage par rapport à sa place d'origine (en mm). */
+export interface SignatureImage {
+  src: string
+  ratio: number // hauteur / largeur
+  w: number
+  x: number
+  y: number
+}
+
 export interface LetterDoc {
   kind: 'letter'
   id: string
@@ -154,6 +165,7 @@ export interface LetterDoc {
   paragraphs: Paragraph[]
   closing: string
   signature: string
+  sig?: SignatureImage
   createdAt: string
   updatedAt: string
 }
@@ -187,6 +199,39 @@ export interface TimelineEvent {
   text: string
 }
 
+/** Candidature envoyée : copie figée des documents, telle que le recruteur les a reçus. */
+export interface Submission {
+  id: string
+  date: string
+  note: string
+  cv?: CvDoc
+  letter?: LetterDoc
+}
+
+export interface InterviewQuestion {
+  id: string
+  q: string
+  a: string
+}
+
+export interface InterviewStory {
+  id: string
+  title: string
+  situation: string
+  action: string
+  result: string
+}
+
+export interface Interview {
+  date: string
+  place: string
+  people: string
+  questions: InterviewQuestion[]
+  stories: InterviewStory[]
+  ask: string
+  notes: string
+}
+
 export interface Application {
   id: string
   company: string
@@ -204,6 +249,9 @@ export interface Application {
   color: string
   docs: Doc[]
   timeline: TimelineEvent[]
+  submissions?: Submission[]
+  followUps?: string[] // dates des relances faites
+  interview?: Interview
   createdAt: string
   updatedAt: string
 }
@@ -212,6 +260,7 @@ export interface Profile {
   basics: Basics
   sections: Section[]
   signature: string
+  signatureImage?: { src: string; ratio: number }
 }
 
 export interface Settings {
@@ -219,6 +268,7 @@ export interface Settings {
   defaultLang: Lang
   spellcheckConsent: boolean
   onboarded: boolean
+  assistant?: boolean // assistant « Adapter à l'offre », actif par défaut
 }
 
 export interface DB {

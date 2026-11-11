@@ -6,6 +6,7 @@ import { exportProjectFile, folderSupported, reconnectFolder } from './storage/s
 import { Dashboard } from './pages/Dashboard'
 import { ApplicationPage } from './pages/ApplicationPage'
 import { DocPage } from './pages/DocPage'
+import { SubmissionPage } from './pages/SubmissionPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { Onboarding } from './pages/Onboarding'
@@ -90,6 +91,7 @@ export const App = () => {
   let content
   if (!settings.onboarded) content = <Onboarding />
   else if (inEditor) content = <DocPage app={app} docId={route[3]} />
+  else if (app && route[2] === 'envoi') content = <SubmissionPage app={app} subId={route[3]} kind={route[4]} />
   else {
     const page =
       route[0] === 'app' ? (

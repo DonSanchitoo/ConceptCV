@@ -107,6 +107,7 @@ export const newLetter = (
     paragraphs: model.paragraphs.map((p) => ({ id: uid(), role: p.role, text: fill(p.text) })),
     closing: CLOSINGS[lang][0],
     signature: profile.signature || fullName(profile.basics),
+    ...(profile.signatureImage ? { sig: { ...profile.signatureImage, w: 45, x: 0, y: 0 } } : {}),
     createdAt: nowIso(),
     updatedAt: nowIso(),
   }

@@ -17,6 +17,8 @@ import { TemplateGallery } from '../editor/TemplateGallery'
 import { LetterModelPicker } from '../editor/LetterModelPicker'
 import { setStatus } from './Dashboard'
 import { exportProjectFile } from '../storage/sync'
+import { SendTab } from './SendTab'
+import { InterviewTab } from './InterviewTab'
 
 const KIND = {
   cv: { label: 'CV', plural: 'CV', icon: <FileText /> },
@@ -90,7 +92,7 @@ const DocCard = ({ app, doc }: { app: Application; doc: Doc }) => {
 
 export const ApplicationPage = ({ app }: { app: Application }) => {
   const db = useStore((s) => s.db)
-  const [tab, setTab] = useState<'docs' | 'job' | 'track'>('docs')
+  const [tab, setTab] = useState<'docs' | 'job' | 'send' | 'interview' | 'track'>('docs')
   const [modal, setModal] = useState<'cv' | 'letter' | 'dup' | null>(null)
   const [lang, setLang] = useState<Lang>(db.settings.defaultLang)
   const [event, setEvent] = useState('')
@@ -162,6 +164,8 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
       <nav className="page-tabs">
         <button className={cx(tab === 'docs' && 'on')} onClick={() => setTab('docs')}>Documents <span>{app.docs.length}</span></button>
         <button className={cx(tab === 'job' && 'on')} onClick={() => setTab('job')}>Offre</button>
+        <button className={cx(tab === 'send' && 'on')} onClick={() => setTab('send')}>Envoi {(app.submissions?.length ?? 0) > 0 && <span>{app.submissions!.length}</span>}</button>
+        <button className={cx(tab === 'interview' && 'on')} onClick={() => setTab('interview')}>Entretien</button>
         <button className={cx(tab === 'track' && 'on')} onClick={() => setTab('track')}>Suivi <span>{app.timeline.length}</span></button>
       </nav>
 
@@ -221,6 +225,9 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
           </div>
         </div>
       )}
+
+      {tab === 'send' && <SendTab app={app} />}
+      {tab === 'interview' && <InterviewTab app={app} />}
 
       {tab === 'track' && (
         <div className="cards-2">

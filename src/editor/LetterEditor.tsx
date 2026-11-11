@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp, GraduationCap, Palette, PenLine, Plus, SpellCheck, Trash2 } from 'lucide-react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { ArrowDown, ArrowUp, GraduationCap, Palette, PenLine, Plus, Signature, SpellCheck, Trash2 } from 'lucide-react'
 import type { Application, CvDoc, LetterDoc, ParagraphRole, Recipient } from '../types'
 import { mutate, toast, updateDoc, useStore } from '../store'
 import { LetterDocument } from '../render/LetterDocument'
@@ -8,11 +8,11 @@ import { countWords, letterPlainText } from '../analysis/keywords'
 import { checkSpelling, type SpellIssue } from '../analysis/spell'
 import { CLOSINGS, GREETINGS, ROLE_GUIDES, getLetterModel } from '../templates/letterModels'
 import { CV_TEMPLATES, getTemplate } from '../templates/cvTemplates'
-import { downloadBlob, fullName, slug, uid } from '../lib/util'
+import { downloadBlob, fileToSignature, fullName, slug, uid } from '../lib/util'
 import { printNode } from '../export/print'
 import { letterToDocx } from '../export/docx'
 import { confirmDialog } from '../ui/dialog'
-import { Area, Field, ScoreRing, Select, cx } from '../ui/kit'
+import { Area, Field, Range, ScoreRing, Select, cx } from '../ui/kit'
 import { EditorShell } from './EditorShell'
 import { Preview } from './Preview'
 import { DesignControls } from './CvPanels'
@@ -34,6 +34,8 @@ export const LetterEditor = ({ app, letter }: { app: Application; letter: Letter
   const [issues, setIssues] = useState<LocatedIssue[] | null>(null)
   const [checking, setChecking] = useState(false)
   const consent = useStore((s) => s.db.settings.spellcheckConsent)
+  const profileSig = useStore((s) => s.db.profile.signatureImage)
+  const sigFile = useRef<HTMLInputElement>(null)
   const patch = useCallback((fn: (l: LetterDoc) => void) => updateDoc<LetterDoc>(app.id, letter.id, fn), [app.id, letter.id])
   const report = useMemo(() => analyzeLetter(letter, pages, app.company, app.role), [letter, pages, app.company, app.role])
   const guides = ROLE_GUIDES[letter.lang]
@@ -195,6 +197,35 @@ export const LetterEditor = ({ app, letter }: { app: Application; letter: Letter
           ))}
         </div>
         <Field label="Signature" value={letter.signature} onChange={(v) => patch((l) => void (l.signature = v))} />
+        <div className="field">
+          <span className="field-label">Signature manuscrite</span>
+          <div className="row">
+            <button className="btn small" onClick={() => sigFile.current?.click()}><Signature /> {letter.sig ? 'Changer l’image' : 'Importer une image (PNG)'}</button>
+            {!letter.sig && profileSig && <button className="btn small" onClick={() => patch((l) => void (l.sig = { ...profileSig, w: 45, x: 0, y: 0 }))}>Reprendre celle du profil</button>}
+            {letter.sig && <button className="btn small ghost" onClick={() => patch((l) => void (l.sig && Object.assign(l.sig, { x: 0, y: 0, w: 45 })))}>Replacer</button>}
+            {letter.sig && <button className="btn small ghost danger-text" onClick={() => patch((l) => void delete l.sig)}>Retirer</button>}
+          </div>
+          {letter.sig && <Range label="Largeur" value={letter.sig.w} onChange={(v) => patch((l) => void (l.sig && (l.sig.w = v)))} min={12} max={110} unit=" mm" />}
+          <span className="field-hint">{letter.sig ? 'Dans l’aperçu : faites glisser la signature pour la placer, tirez la poignée ou pincez pour la redimensionner.' : 'Un PNG à fond transparent donne le meilleur résultat. L’image est gardée dans votre profil pour les prochaines lettres.'}</span>
+          <input
+            ref={sigFile}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={async (e) => {
+              const f = e.target.files?.[0]
+              e.target.value = ''
+              if (!f) return
+              try {
+                const img = await fileToSignature(f)
+                patch((l) => void (l.sig = { ...img, w: l.sig?.w ?? 45, x: l.sig?.x ?? 0, y: l.sig?.y ?? 0 }))
+                mutate((db) => void (db.profile.signatureImage = img))
+              } catch {
+                toast('Image illisible.', 'warn')
+              }
+            }}
+          />
+        </div>
       </details>
     </div>
   )
