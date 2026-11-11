@@ -280,6 +280,7 @@ export interface DB {
   profile: Profile
   applications: Application[]
   settings: Settings
+  jobs?: JobsConfig
   /** Dossiers supprimés (id → date) : évite qu'un ancien fichier de projet les fasse réapparaître. */
   deleted?: Record<string, string>
 }
@@ -292,4 +293,44 @@ export interface ProjectFile {
   exportedAt: string
   application: Application
   profile: Profile
+}
+
+/* ───────── Recherche d'offres ───────── */
+
+export interface JobSource {
+  id: string
+  name: string
+  kind: 'francetravail' | 'rss' | 'page'
+  /** Adresse du flux ou de la page. Peut contenir {q} (mots-clés), {lieu} et {dept}. */
+  url: string
+  enabled: boolean
+}
+
+export interface JobLink {
+  id: string
+  name: string
+  url: string // avec {q}, {lieu}, {dept}
+}
+
+export interface JobQuery {
+  keywords: string
+  place: string
+  radius: number
+  exclude: string
+  maxDays: number
+  contract: string
+  strictPlace: boolean
+}
+
+export interface SavedSearch extends JobQuery {
+  id: string
+  name: string
+}
+
+export interface JobsConfig {
+  relayUrl: string
+  sources: JobSource[]
+  links: JobLink[]
+  searches: SavedSearch[]
+  hidden: string[] // offres écartées
 }

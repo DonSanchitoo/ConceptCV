@@ -87,8 +87,8 @@ const Column = ({ status, apps }: { status: (typeof STATUSES)[number]; apps: App
   )
 }
 
-export const NewApplicationModal = ({ onClose }: { onClose: () => void }) => {
-  const [f, setF] = useState({ company: '', role: '', location: '', url: '', jobText: '' })
+export const NewApplicationModal = ({ onClose, initial }: { onClose: () => void; initial?: Partial<{ company: string; role: string; location: string; url: string; jobText: string }> }) => {
+  const [f, setF] = useState({ company: '', role: '', location: '', url: '', jobText: '', ...initial })
   const create = () => {
     const a = newApplication({ ...f })
     mutate((db) => void db.applications.unshift(a))

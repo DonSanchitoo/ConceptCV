@@ -243,6 +243,19 @@ input[type='range'] { width: 100%; accent-color: var(--primary); height: 26px; }
 .qa-head { display: flex; gap: 6px; align-items: center; } .qa-q { flex: 1; min-width: 0; border: 0; background: transparent; font-weight: 700; outline: 0; padding: 4px; border-radius: 6px; } .qa-q:hover, .qa-q:focus { background: var(--surface-2); }
 .editor-preview.frozen { flex: 1; }
 
+.jobs-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
+.fold.flat { border: 0; padding: 0; background: none; } .fold.flat[open] { padding-bottom: 4px; } .fold.flat summary { padding: 6px 0; font-size: 13px; color: var(--muted); justify-content: flex-start; gap: 8px; }
+.field-hint svg { width: 12px; height: 12px; vertical-align: -1px; }
+.source-status { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 12px; } .filter-row { margin-bottom: 10px; }
+.offer { display: flex; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); } .offer.known { opacity: .7; }
+.offer-score { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 16px; flex: none; }
+.offer-score.good { background: var(--ok-soft); color: var(--ok); } .offer-score.mid { background: var(--warn-soft); color: var(--warn); } .offer-score.low { background: var(--surface-2); color: var(--muted); }
+.offer-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; } .offer-body h3 { font-size: 15.5px; display: block; }
+.offer-meta { color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .offer-text { font-size: 13px; color: var(--text); opacity: .85; overflow-wrap: anywhere; } .offer-why { font-size: 12.5px; color: var(--primary); }
+.source-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); } .source-row > div { flex: 1; min-width: 0; display: flex; flex-direction: column; } .source-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .source-row .toggle { padding: 0; }
+.pill.saved { display: inline-flex; padding: 0; overflow: hidden; } .pill.saved button { border: 0; background: none; padding: 5px 10px; } .pill.saved button:last-child { padding: 5px 9px 5px 4px; color: var(--muted); }
+a.pill { text-decoration: none; color: var(--text); } .input.grow { flex: 1; width: auto; min-width: 160px; } .bookmarklet { cursor: grab; align-self: flex-start; border-style: dashed; }
+
 /* Stockage et accueil */
 .storage { display: flex; flex-direction: column; gap: 16px; } .storage-mode { display: flex; gap: 14px; align-items: flex-start; } .storage-mode > div:last-child { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
 .storage-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; flex: none; } .storage-icon svg { width: 20px; height: 20px; }
@@ -261,7 +274,7 @@ input[type='range'] { width: 100%; accent-color: var(--primary); height: 26px; }
   .sync { padding: 8px; } .sync span { display: none; }
   .page { padding: 20px 16px 40px; } h1 { font-size: 22px; }
   .stats { grid-template-columns: repeat(2, 1fr); } .stats .stat:last-child { grid-column: span 2; }
-  .cards-2 { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .field.half { grid-column: 1 / -1; }
+  .cards-2, .jobs-layout { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .field.half { grid-column: 1 / -1; }
   .doc-grid, .tpl-grid { grid-template-columns: repeat(auto-fill, 152px); gap: 14px 12px; } .doc-thumb, .tpl-thumb { width: 152px; height: 215px; } .doc-empty { width: 152px; } .thumb-zoom, .tpl-zoom { zoom: .1915; }
   .editor-main { grid-template-columns: 1fr; } .editor.view-edit .editor-preview { display: none; } .editor.view-preview .editor-panel { display: none; }
   .editor-panel { border-right: 0; } .panel-scroll { padding-bottom: 80px; } .hide-s { display: none; } .doc-name { flex: 1 1 60px; }

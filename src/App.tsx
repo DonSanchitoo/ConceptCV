@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { AlertTriangle, Briefcase, Check, CloudUpload, FolderSync, HardDrive, Loader2, Settings, UserRound } from 'lucide-react'
+import { AlertTriangle, Briefcase, Search, Check, CloudUpload, FolderSync, HardDrive, Loader2, Settings, UserRound } from 'lucide-react'
 import { useStore } from './store'
 import { go, useRoute } from './lib/router'
 import { exportProjectFile, folderSupported, reconnectFolder } from './storage/sync'
@@ -7,6 +7,7 @@ import { Dashboard } from './pages/Dashboard'
 import { ApplicationPage } from './pages/ApplicationPage'
 import { DocPage } from './pages/DocPage'
 import { SubmissionPage } from './pages/SubmissionPage'
+import { JobsPage } from './pages/JobsPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { Onboarding } from './pages/Onboarding'
@@ -52,6 +53,7 @@ const SyncPill = () => {
 
 const NAV = [
   { path: '/', label: 'Candidatures', icon: <Briefcase />, match: (r: string[]) => r.length === 0 || r[0] === 'app' },
+  { path: '/offres', label: 'Offres', icon: <Search />, match: (r: string[]) => r[0] === 'offres' || (r[0] ?? '').startsWith('capture') },
   { path: '/profil', label: 'Profil', icon: <UserRound />, match: (r: string[]) => r[0] === 'profil' },
   { path: '/reglages', label: 'Réglages', icon: <Settings />, match: (r: string[]) => r[0] === 'reglages' },
 ]
@@ -96,6 +98,8 @@ export const App = () => {
     const page =
       route[0] === 'app' ? (
         app ? <ApplicationPage app={app} /> : <Empty icon={<Briefcase />} title="Dossier introuvable" text="Il a peut-être été supprimé sur un autre appareil." action={<button className="btn primary" onClick={() => go('/')}>Voir mes candidatures</button>} />
+      ) : route[0] === 'offres' || (route[0] ?? '').startsWith('capture') ? (
+        <JobsPage capture={(route[0] ?? '').startsWith('capture')} />
       ) : route[0] === 'profil' ? (
         <ProfilePage />
       ) : route[0] === 'reglages' ? (

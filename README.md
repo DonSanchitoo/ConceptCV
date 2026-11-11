@@ -16,6 +16,22 @@ Atelier privé de CV et de lettres de motivation. Une application web sans serve
 - **Signature manuscrite** : image importée (PNG transparent conseillé), placée et redimensionnée directement sur la lettre à la souris ou au doigt, reprise dans le PDF et le Word.
 - **Exports** : PDF (identique à l'aperçu, texte sélectionnable), Word `.docx` (une colonne, modifiable, pensé pour les ATS), texte brut.
 
+## Recherche d'offres
+
+La page **Offres** interroge à la demande plusieurs sources, note chaque offre sur 100 sans IA (mots-clés dans le titre et le texte, compétences du profil, date, lieu), dédoublonne, et crée le dossier de candidature en un clic.
+
+- **Sources lues automatiquement** : l'API officielle France Travail, des flux RSS, et des pages de résultats quelconques dont l'outil extrait les liens d'offres. On ajoute ses propres sites, avec `{q}`, `{lieu}` et `{dept}` dans l'adresse.
+- **Sites qui refusent la lecture automatique** (LinkedIn, Indeed, Welcome to the Jungle, APEC) : liens de recherche pré-remplis, ajout d'une annonce par son adresse, et signet « Envoyer vers ConceptCV » qui crée le dossier depuis la page ouverte.
+- **Lieu** : ville, département ou région, résolus par le référentiel public `geo.api.gouv.fr`.
+
+Un navigateur ne peut pas lire les pages d'un autre site. La recherche passe donc par un petit relais gratuit, dans `relay/`, à déployer sur Vercel :
+
+1. Sur Vercel, importer ce dépôt en choisissant `relay` comme *Root Directory* (aucun framework, aucune commande de build).
+2. Variables d'environnement facultatives : `FT_CLIENT_ID` et `FT_CLIENT_SECRET` (identifiants gratuits obtenus sur francetravail.io en s'abonnant à l'API « Offres d'emploi v2 »), `ALLOWED_ORIGINS` si le site n'est pas servi depuis `https://donsanchitoo.github.io`.
+3. Coller l'adresse du relais dans la page Offres.
+
+Le relais n'accepte que les appels venant du site, refuse les adresses internes, et ne reçoit que les critères de recherche et les adresses à lire : jamais les CV ni les dossiers.
+
 ## Données et synchronisation
 
 Le dossier choisi contient :
@@ -62,6 +78,7 @@ Le workflow `deploy.yml` se déclenche sur tout tag `*.*.*` : typage, tests, con
 - L'import PDF repose sur des règles (colonnes, titres, dates) : le résultat est à relire.
 - L'export Word ne reproduit pas la mise en page des modèles à colonnes, par choix : il produit une version une colonne lisible par les ATS.
 - Le score ATS est une estimation fondée sur les pratiques documentées, pas le verdict d'un logiciel de recrutement précis.
+- La recherche d'offres dépend de ce que chaque site laisse lire : une page construite en JavaScript ou protégée contre les robots ne renvoie rien, et l'outil l'indique source par source.
 - La synchronisation est de type « dernière écriture gagnante », projet par projet : éviter de modifier le même projet sur deux appareils en même temps.
 - Sur iPhone, l'enregistrement passe par la feuille de partage (« Enregistrer dans Fichiers ») : il faut choisir le sous-dossier `Projets` et accepter de remplacer le fichier.
 
