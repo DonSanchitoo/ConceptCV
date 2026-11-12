@@ -96,8 +96,8 @@ export const SendTab = ({ app }: { app: Application }) => {
             <Select half label="Lettre" value={letterId} onChange={setLetterId} options={[...letters.map((l) => ({ value: l.id, label: l.name })), { value: '', label: 'Sans lettre' }]} />
           </div>
           <div className="row">
-            {cv && <button className="btn small" onClick={() => void printNode(<CvDocument cv={cv} />, cvFileName(cv, app), cv.design.pageFormat)}><FileDown /> {cvFileName(cv, app)}.pdf</button>}
-            {letter && <button className="btn small" onClick={() => void printNode(<LetterDocument letter={letter} />, letterFile, letter.design.pageFormat)}><FileDown /> {letterFile}.pdf</button>}
+            {cv && <button className="btn small file" onClick={() => void printNode(<CvDocument cv={cv} />, cvFileName(cv, app), cv.design.pageFormat)}><FileDown /> <span>{cvFileName(cv, app)}.pdf</span></button>}
+            {letter && <button className="btn small file" onClick={() => void printNode(<LetterDocument letter={letter} />, letterFile, letter.design.pageFormat)}><FileDown /> <span>{letterFile}.pdf</span></button>}
           </div>
         </div>
         <div className="card">

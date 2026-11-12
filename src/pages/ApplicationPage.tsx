@@ -16,6 +16,7 @@ import { confirmDialog, promptDialog } from '../ui/dialog'
 import { TemplateGallery } from '../editor/TemplateGallery'
 import { LetterModelPicker } from '../editor/LetterModelPicker'
 import { setStatus } from './Dashboard'
+import { FitPage } from '../ui/FitPage'
 import { exportProjectFile } from '../storage/sync'
 import { SendTab } from './SendTab'
 import { InterviewTab } from './InterviewTab'
@@ -42,14 +43,14 @@ const DocCard = ({ app, doc }: { app: Application; doc: Doc }) => {
     <div className="doc-card">
       <button className="doc-thumb" onClick={open} aria-label={`Ouvrir ${doc.name}`}>
         {doc.kind === 'cv' && (
-          <div className="thumb-zoom">
+          <FitPage className="thumb-zoom">
             <CvDocument cv={doc} paginate={false} />
-          </div>
+          </FitPage>
         )}
         {doc.kind === 'letter' && (
-          <div className="thumb-zoom">
+          <FitPage className="thumb-zoom">
             <LetterDocument letter={doc} />
-          </div>
+          </FitPage>
         )}
         {(doc.kind === 'note' || doc.kind === 'analysis') && (
           <div className="thumb-text">
@@ -147,7 +148,7 @@ export const ApplicationPage = ({ app }: { app: Application }) => {
         </select>
         {!folder && (
           <button className={cx('btn', unsaved && 'primary')} onClick={() => void exportProjectFile(app)} title="Enregistre ce projet dans un fichier, à ranger dans le sous-dossier Projets de votre dossier iCloud">
-            <CloudUpload /> {unsaved ? 'Enregistrer le projet' : 'Projet enregistré'}
+            <CloudUpload /> {unsaved ? <>Enregistrer<span className="hide-s"> le projet</span></> : <>Enregistré<span className="hide-s"> dans un fichier</span></>}
           </button>
         )}
         <Menu trigger={<button className="icon-btn" aria-label="Actions"><MoreHorizontal /></button>}>

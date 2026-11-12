@@ -4,6 +4,7 @@ import type { CvDoc, Profile } from '../types'
 import { CV_TEMPLATES, type CvTemplate, type TemplateCategory } from '../templates/cvTemplates'
 import { CvDocument } from '../render/CvDocument'
 import { Modal, cx } from '../ui/kit'
+import { FitPage } from '../ui/FitPage'
 import { newCv } from '../lib/factory'
 import { sampleProfile } from '../templates/sample'
 
@@ -33,9 +34,9 @@ export const TemplateGallery = ({ title, current, source, onPick, onClose, heade
         {list.map((t) => (
           <button key={t.id} className={cx('tpl', current === t.id && 'on')} onClick={() => onPick(t)}>
             <div className="tpl-thumb">
-              <div className="tpl-zoom">
+              <FitPage className="tpl-zoom">
                 <CvDocument cv={{ ...base, design: { ...t.design, showPhoto: t.design.showPhoto && !!base.basics.photo } }} paginate={false} />
-              </div>
+              </FitPage>
               {current === t.id && <span className="tpl-check"><Check /></span>}
             </div>
             <div className="tpl-meta">

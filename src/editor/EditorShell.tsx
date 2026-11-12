@@ -41,7 +41,7 @@ export const EditorShell = ({ appId, name, onRename, badge, tabs, tab, setTab, p
         <button className="icon-btn" disabled={!canUndo} onClick={undo} title="Annuler (Ctrl+Z)">
           <Undo2 />
         </button>
-        <button className="icon-btn" disabled={!canRedo} onClick={redo} title="Rétablir (Ctrl+Maj+Z)">
+        <button className="icon-btn hide-s" disabled={!canRedo} onClick={redo} title="Rétablir (Ctrl+Maj+Z)">
           <Redo2 />
         </button>
         <Menu
